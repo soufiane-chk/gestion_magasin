@@ -22,6 +22,7 @@ class ApiService {
   getHeaders() {
     const headers = { ...apiConfig.headers };
     const token = this.getAuthToken();
+    headers['X-Requested-With'] = 'XMLHttpRequest';
     
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -40,7 +41,10 @@ class ApiService {
       try {
         const error = await response.json();
         errorMessage = error.message || error.error || `Erreur ${response.status}`;
-      } catch (e) {
+        if (typeof errorMessage === 'string' && errorMessage.toLowerCase().includes('crumb')) {
+          errorMessage = 'Aucun jeton CSRF valide (crumb) n’a été inclus. Configurez l’URL de l’API: créez frontend/.env avec VITE_API_URL=http://127.0.0.1:8001/api';
+        }
+      } catch {
         errorMessage = `Erreur ${response.status}: ${response.statusText}`;
       }
       throw new Error(errorMessage);
@@ -68,7 +72,7 @@ class ApiService {
       console.error('API Error:', error);
       // Si c'est une erreur réseau (Failed to fetch)
       if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
-        throw new Error('Impossible de se connecter au serveur. Vérifiez que le backend est démarré sur http://localhost:8000');
+        throw new Error('Impossible de se connecter au serveur. Vérifiez que le backend est démarré sur http://localhost:8001');
       }
       throw error;
     }
@@ -172,4 +176,3 @@ export const usersApi = {
   create: (data) => apiService.post('/users', data),
   delete: (id) => apiService.delete(`/users/${id}`),
 };
-
