@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, ShoppingCart, Trash2, Plus, Minus, CreditCard, Printer } from 'lucide-react';
-import { produitsApi, commandesApi, apiService } from '../services/api';
+import { produitsApi, commandesApi, apiService, clientsApi } from '../services/api';
 
 const Sales = () => {
   const [products, setProducts] = useState([]);
@@ -10,6 +10,7 @@ const Sales = () => {
   const [selectedClient, setSelectedClient] = useState('Client Comptoir');
   const [paymentMode, setPaymentMode] = useState('Espèces');
   const [userId, setUserId] = useState(null);
+  const [clients, setClients] = useState([]);
 
   useEffect(() => {
     const load = async () => {
@@ -34,6 +35,18 @@ const Sales = () => {
       }
     };
     load();
+  }, []);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const data = await clientsApi.getAll();
+        setClients(data);
+      } catch (e) {
+        // gestion d'erreur
+      }
+    };
+    fetchClients();
   }, []);
 
   const filteredProducts = useMemo(() => {
@@ -163,12 +176,19 @@ const Sales = () => {
             <ShoppingCart size={20} /> Panier en cours
           </h2>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <select 
-              className="p-2 border rounded-lg bg-white text-sm"
+            <label className="block mb-1 font-medium">Choisir le client</label>
+            <select
               value={selectedClient}
-              onChange={(e) => setSelectedClient(e.target.value)}
+              onChange={e => setSelectedClient(e.target.value)}
+              className="w-full border rounded px-3 py-2 mb-4"
+              required
             >
-              <option>Client Comptoir</option>
+              <option value="">Sélectionner un client</option>
+              {clients.map(client => (
+                <option key={client.Id_Client} value={client.Id_Client}>
+                  {client.Nom} {client.Prenom}
+                </option>
+              ))}
             </select>
             <select 
               className="p-2 border rounded-lg bg-white text-sm"

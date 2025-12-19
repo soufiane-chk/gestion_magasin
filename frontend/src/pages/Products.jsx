@@ -284,15 +284,6 @@ const Products = () => {
         </div>
       </div>
 
-      {/* Graphique innovant */}
-      <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-        <h4 className="font-semibold text-gray-700 mb-2">Graphique du stock par catégorie</h4>
-        <Bar data={chartData} options={{
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true } }
-        }} height={80} />
-      </div>
-
       {/* Messages de feedback */}
       {feedback && (
         <div className="bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2">

@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Package, ArrowUpRight, ArrowDownLeft, AlertTriangle, History } from 'lucide-react';
+import { Bar } from 'react-chartjs-2';
+import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import { produitsApi, categoriesApi } from '../services/api';
+Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const Stock = () => {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [stockItems] = useState([
     { id: 1, name: 'PC Portable HP', quantity: 10, minLimit: 5, lastUpdate: '2025-10-15' },
     { id: 2, name: 'Clavier Logitech', quantity: 3, minLimit: 5, lastUpdate: '2025-10-16' }, // Stock faible
@@ -13,6 +19,41 @@ const Stock = () => {
     { id: 102, type: 'SORTIE', product: 'Clavier Logitech', qty: 2, date: '2025-10-16 14:20', user: 'Imane' },
   ]);
 
+  useEffect(() => {
+    // Charge les produits et catégories dynamiquement
+    const fetchData = async () => {
+      try {
+        const produits = await produitsApi.getAll();
+        const cats = await categoriesApi.getAll();
+        setProducts(produits);
+        setCategories(cats);
+      } catch (e) {
+        // Optionnel: gestion d'erreur
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Calcul dynamique de la valeur totale du stock
+  const totalStockValue = products.reduce(
+    (sum, p) => sum + (p.Prix_Vente * p.Qt_Stock),
+    0
+  );
+
+  // Graphe dynamique
+  const chartData = {
+    labels: categories.map(c => c.Libelle_Cat),
+    datasets: [{
+      label: 'Stock par catégorie',
+      data: categories.map(cat =>
+        products.filter(p => p.Id_Categorie === cat.Id_Categorie)
+          .reduce((sum, p) => sum + p.Qt_Stock, 0)
+      ),
+      backgroundColor: 'rgba(59,130,246,0.7)',
+      borderRadius: 8,
+    }]
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
@@ -22,7 +63,9 @@ const Stock = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
           <p className="text-gray-500 text-sm">Valeur Totale Stock</p>
-          <h3 className="text-2xl font-bold text-gray-800">145,200 MAD</h3>
+          <h3 className="text-2xl font-bold text-gray-800">
+            {totalStockValue.toLocaleString('fr-FR')} MAD
+          </h3>
         </div>
         <div className="bg-red-50 p-5 rounded-xl shadow-sm border border-red-100">
           <div className="flex justify-between items-start">
@@ -100,6 +143,14 @@ const Stock = () => {
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100" style={{ minHeight: 300 }}>
+        <h4 className="font-semibold text-gray-700 mb-2">Graphique du stock par catégorie</h4>
+        <Bar data={chartData} options={{
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }} height={80} />
       </div>
     </div>
   );

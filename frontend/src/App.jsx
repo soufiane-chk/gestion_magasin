@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Clients from './pages/Clients';
 import Users from './pages/Users';
 import Home from './pages/Home';
+import ParametresCompte from './pages/ParametresCompte';
 
 // Protection de route (Vérifie si on est connecté)
 const ProtectedRoute = ({ children }) => {
@@ -41,6 +42,7 @@ function App() {
           <Route path="clients" element={<Clients />} />
           <Route path="users" element={<Users />} />
         </Route>
+        {/* <Route path="/settings" element={<ParametresCompte />} /> */}
       </Routes>
     </Router>
   );

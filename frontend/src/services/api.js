@@ -56,17 +56,18 @@ class ApiService {
    * Méthode générique pour faire des requêtes
    */
   async request(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`;
-    const config = {
-      ...options,
-      headers: {
-        ...this.getHeaders(),
-        ...options.headers,
-      },
+    const token = localStorage.getItem('userToken');
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
     };
 
     try {
-      const response = await fetch(url, config);
+      const response = await fetch(`${this.baseURL}${endpoint}`, {
+        ...options,
+        headers,
+      });
       return await this.handleResponse(response);
     } catch (error) {
       console.error('API Error:', error);
@@ -175,4 +176,15 @@ export const usersApi = {
   getAll: () => apiService.get('/users'),
   create: (data) => apiService.post('/users', data),
   delete: (id) => apiService.delete(`/users/${id}`),
+};
+
+export const userApi = {
+  getMe: async () => {
+    // Adapte l'endpoint selon ton backend (ex: /me ou /user)
+    return apiService.get('/me');
+  },
+  updateMe: async (data) => {
+    // Adapte l'endpoint selon ton backend (ex: /me ou /user)
+    return apiService.put('/me', data);
+  }
 };
