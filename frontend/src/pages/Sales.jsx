@@ -97,7 +97,7 @@ const Sales = () => {
       Heure_Cmd: timeStr,
       Total_TTC: totalAmount,
       Mode_Paiement: paymentMode,
-      Id_Client: null,
+      Id_Client: (selectedClient && selectedClient !== 'Client Comptoir') ? selectedClient : null,
       Id_Utilisateur: userId || 1,
       produits: cart.map(item => ({
         Ref_Produit: item.id,

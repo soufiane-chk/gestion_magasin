@@ -26,8 +26,9 @@ class UserController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            // Le cast "hashed" sur le modèle User s'occupe du hachage
             'password' => $validated['password'] ?? 'password123',
+            'Nom_Utilisateur' => $validated['name'], // Duplicate name to Nom_Utilisateur
+            'Type_Utilisateur' => 'Utilisateur', // Default role
         ]);
 
         return response()->json($user, 201);

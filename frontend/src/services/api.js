@@ -154,6 +154,8 @@ export const commandesApi = {
   delete: (id) => apiService.delete(`/commandes/${id}`),
 };
 
+export const ventesApi = commandesApi;
+
 export const cartesFideliteApi = {
   getAll: () => apiService.get('/cartes-fidelite'),
   getById: (id) => apiService.get(`/cartes-fidelite/${id}`),
