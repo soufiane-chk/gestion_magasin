@@ -67,10 +67,10 @@ const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 ${
         scrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50' 
-          : 'bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600'
+          ? 'shadow-lg' 
+          : ''
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,14 +82,10 @@ const Header = () => {
               <Store className="relative text-white w-8 h-8 group-hover:scale-110 transition-transform duration-300" />
             </div>
             <div>
-              <h1 className={`text-xl font-bold transition-colors duration-300 ${
-                scrolled ? 'text-gray-800' : 'text-white'
-              }`}>
+              <h1 className="text-xl font-bold transition-colors duration-300 text-white">
                 MagasinManager
               </h1>
-              <p className={`text-xs transition-colors duration-300 ${
-                scrolled ? 'text-gray-500' : 'text-white/80'
-              }`}>
+              <p className="text-xs transition-colors duration-300 text-white/80">
                 Gestion Intelligente
               </p>
             </div>
@@ -107,11 +103,7 @@ const Header = () => {
                   setShowNotifications(next);
                   if (next) await loadNotifications();
                 }}
-                className={`relative p-2 rounded-lg transition-all duration-300 hover:scale-110 ${
-                  scrolled 
-                    ? 'text-gray-600 hover:bg-gray-100' 
-                    : 'text-white/80 hover:bg-white/10'
-                }`}
+                className="relative p-2 rounded-lg transition-all duration-300 hover:scale-110 text-white/80 hover:bg-white/10"
                 aria-haspopup="true"
                 aria-expanded={showNotifications}
               >
@@ -161,15 +153,9 @@ const Header = () => {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 hover:scale-105 ${
-                  scrolled 
-                    ? 'text-gray-600 hover:bg-gray-100' 
-                    : 'text-white/80 hover:bg-white/10'
-                }`}
+                className="flex items-center space-x-2 p-2 rounded-lg transition-all duration-300 hover:scale-105 text-white/80 hover:bg-white/10"
               >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  scrolled ? 'bg-blue-500' : 'bg-white/20'
-                }`}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 bg-white/20">
                   <User size={18} className="text-white" />
                 </div>
               </button>
